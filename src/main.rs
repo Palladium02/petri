@@ -10,6 +10,6 @@ fn main() {
     let input = fs::read_to_string("./examples/example1.ptr").unwrap();
     let ast = Parser::new(Lexer::new(&input)).parse();
 
-    println!("{}", ast.is_ok())
+    println!("{}", ast.is_ok());
     // println!("Hello, world!");
 }

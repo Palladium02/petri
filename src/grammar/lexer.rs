@@ -27,25 +27,25 @@ pub enum Token {
 }
 
 impl Token {
-    pub fn kind(&self) -> TokenKind {
+    pub const fn kind(&self) -> TokenKind {
         match self {
-            Token::Place => TokenKind::Place,
-            Token::Transition => TokenKind::Transition,
-            Token::Tokens => TokenKind::Tokens,
-            Token::Identifier(_) => TokenKind::Identifier,
-            Token::Integer(_) => TokenKind::Integer,
-            Token::String(_) => TokenKind::String,
-            Token::Arrow => TokenKind::Arrow,
-            Token::LeftBracket => TokenKind::LeftBracket,
-            Token::RightBracket => TokenKind::RightBracket,
-            Token::Semicolon => TokenKind::Semicolon,
-            Token::Equals => TokenKind::Equals,
-            Token::Unexpected(_) => TokenKind::Unexpected,
+            Self::Place => TokenKind::Place,
+            Self::Transition => TokenKind::Transition,
+            Self::Tokens => TokenKind::Tokens,
+            Self::Identifier(_) => TokenKind::Identifier,
+            Self::Integer(_) => TokenKind::Integer,
+            Self::String(_) => TokenKind::String,
+            Self::Arrow => TokenKind::Arrow,
+            Self::LeftBracket => TokenKind::LeftBracket,
+            Self::RightBracket => TokenKind::RightBracket,
+            Self::Semicolon => TokenKind::Semicolon,
+            Self::Equals => TokenKind::Equals,
+            Self::Unexpected(_) => TokenKind::Unexpected,
         }
     }
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum TokenKind {
     // Keywords
     Place,

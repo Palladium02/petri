@@ -50,7 +50,7 @@ impl<'t> Parser<'t> {
     }
 
     pub fn expect_place_declaration(&mut self) -> Result<Statement, ParseError> {
-        let (_, start) = self.expect::<Place>()?;
+        let ((), start) = self.expect::<Place>()?;
 
         let (name, _) = self.expect::<Identifier>()?;
 
@@ -68,7 +68,7 @@ impl<'t> Parser<'t> {
             0
         };
 
-        let (_, end) = self.expect::<Semicolon>()?;
+        let ((), end) = self.expect::<Semicolon>()?;
 
         Ok(Statement::Place {
             location: start.merge(&end),
@@ -79,7 +79,7 @@ impl<'t> Parser<'t> {
     }
 
     pub fn expect_transition_declaration(&mut self) -> Result<Statement, ParseError> {
-        let (_, start) = self.expect::<Transition>()?;
+        let ((), start) = self.expect::<Transition>()?;
 
         let (name, _) = self.expect::<Identifier>()?;
 
@@ -89,7 +89,7 @@ impl<'t> Parser<'t> {
             None
         };
 
-        let (_, end) = self.expect::<Semicolon>()?;
+        let ((), end) = self.expect::<Semicolon>()?;
 
         Ok(Statement::Transition {
             location: start.merge(&end),
@@ -122,7 +122,7 @@ impl<'t> Parser<'t> {
             nodes.push(Value::Int(weight));
         }
 
-        let (_, end) = self.expect::<Semicolon>()?;
+        let ((), end) = self.expect::<Semicolon>()?;
 
         let pairs = nodes
             .windows(3)
@@ -160,10 +160,14 @@ impl<'t> Parser<'t> {
 
     pub fn expect<E: Extract>(&mut self) -> Result<(E::Output, Range<usize>), ParseError> {
         match self.input.next() {
-            Some((token, span)) => match E::extract(token.clone()) {
-                Some(value) => Ok((value, span)),
-                None => Err(ParseError::UnexpectedToken((token, span))),
-            },
+            // Some((token, span)) => match E::extract(token.clone()) {
+            //     Some(value) => Ok((value, span)),
+            //     None => Err(ParseError::UnexpectedToken((token, span))),
+            // },
+            Some((token, span)) => E::extract(token.clone()).map_or_else(
+                || Err(ParseError::UnexpectedToken((token, span))),
+                |value| Ok((value, span)),
+            ),
             None => Err(ParseError::UnexpectedEoF),
         }
     }

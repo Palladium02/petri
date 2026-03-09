@@ -7,12 +7,12 @@ pub trait Extract {
     fn extract(token: Token) -> Option<Self::Output>;
 }
 
-pub trait RangeExt<T> {
-    fn merge(&self, other: &Range<T>) -> Range<T>;
+pub trait RangeExt {
+    fn merge(&self, other: &Self) -> Self;
 }
 
-impl RangeExt<usize> for Range<usize> {
-    fn merge(&self, other: &Range<usize>) -> Range<usize> {
-        Range::from(self.start.min(other.start)..self.end.max(other.end))
+impl RangeExt for Range<usize> {
+    fn merge(&self, other: &Self) -> Self {
+        Self::from(self.start.min(other.start)..self.end.max(other.end))
     }
 }
