@@ -1,0 +1,4 @@
+place S1 tokens = 2;
+place S2;
+
+S1 -> S2;

@@ -2,6 +2,7 @@ use std::{iter::Peekable, range::Range, str::Chars};
 
 pub type SpannedToken = (Token, Range<usize>);
 
+#[derive(Clone)]
 pub enum Token {
     // Keywords
     Place,
@@ -44,6 +45,7 @@ impl Token {
     }
 }
 
+#[derive(PartialEq)]
 pub enum TokenKind {
     // Keywords
     Place,
@@ -67,6 +69,7 @@ pub enum TokenKind {
     Unexpected,
 }
 
+#[derive(Clone)]
 pub struct Lexer<'c> {
     input: Peekable<Chars<'c>>,
     position: usize,
