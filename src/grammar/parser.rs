@@ -30,7 +30,8 @@ impl<'t> Parser<'t> {
         let mut statements = Vec::new();
 
         while !self.is_eof() {
-            statements.push(self.expect_statement()?);
+            let stmt = self.expect_statement()?;
+            statements.push(stmt);
         }
 
         Ok(statements)
@@ -99,6 +100,7 @@ impl<'t> Parser<'t> {
     }
 
     pub fn expect_arc_declaration(&mut self) -> Result<Statement, ParseError> {
+        #[derive(Debug)]
         enum Value {
             String(String),
             Int(usize),
@@ -111,15 +113,16 @@ impl<'t> Parser<'t> {
         let weight = self.expect_weighted_arrow()?;
         let (snd, _) = self.expect::<Identifier>()?;
 
-        nodes.push(Value::String(snd));
+        nodes.push(Value::String(fst));
         nodes.push(Value::Int(weight));
+        nodes.push(Value::String(snd));
 
         while !self.peek::<Semicolon>() {
             let weight = self.expect_weighted_arrow()?;
             let (nd, _) = self.expect::<Identifier>()?;
 
-            nodes.push(Value::String(nd));
             nodes.push(Value::Int(weight));
+            nodes.push(Value::String(nd));
         }
 
         let ((), end) = self.expect::<Semicolon>()?;
@@ -160,10 +163,6 @@ impl<'t> Parser<'t> {
 
     pub fn expect<E: Extract>(&mut self) -> Result<(E::Output, Range<usize>), ParseError> {
         match self.input.next() {
-            // Some((token, span)) => match E::extract(token.clone()) {
-            //     Some(value) => Ok((value, span)),
-            //     None => Err(ParseError::UnexpectedToken((token, span))),
-            // },
             Some((token, span)) => E::extract(token.clone()).map_or_else(
                 || Err(ParseError::UnexpectedToken((token, span))),
                 |value| Ok((value, span)),
@@ -180,6 +179,6 @@ impl<'t> Parser<'t> {
     }
 
     pub fn is_eof(&mut self) -> bool {
-        self.input.peek().is_some()
+        self.input.peek().is_none()
     }
 }
