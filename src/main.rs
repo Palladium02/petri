@@ -4,12 +4,18 @@ mod grammar;
 
 use std::fs;
 
-use crate::grammar::{lexer::Lexer, parser::Parser};
+use crate::grammar::{analysis::Analyzer, lexer::Lexer, parser::Parser};
 
 fn main() {
     let input = fs::read_to_string("./examples/example1.ptr").unwrap();
     let ast = Parser::new(Lexer::new(&input)).parse();
 
-    println!("{}", ast.is_ok());
-    // println!("Hello, world!");
+    match ast {
+        Ok(ast) => {
+            println!("{:#?}", &ast);
+            let report = Analyzer::new(ast).analyze();
+            println!("{:#?}", report)
+        }
+        Err(_) => println!("Whoopsie daisy"),
+    }
 }
