@@ -2,6 +2,7 @@ use std::range::Range;
 
 pub type Program = Vec<Statement>;
 
+#[derive(Debug)]
 pub enum Statement {
     Place {
         location: Range<usize>,
