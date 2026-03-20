@@ -1,0 +1,2 @@
+# This example is used to test unused symbol detection
+place S1;
