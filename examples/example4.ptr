@@ -1,0 +1,5 @@
+place S1 tokens=1;
+place S2;
+transition t1;
+
+S1 -> t1 -> S2;
