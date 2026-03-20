@@ -17,7 +17,7 @@ impl Transition {
     pub fn is_enabled(&self, net: &PetriNet) -> bool {
         self.inputs
             .iter()
-            .all(|(p, count)| net.places[*p].tokens >= *count)
+            .all(|(place_idx, count)| net.places[*place_idx].tokens >= *count)
     }
 }
 
