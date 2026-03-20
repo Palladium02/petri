@@ -5,6 +5,7 @@ mod analysis;
 mod args;
 mod export;
 mod grammar;
+mod repl;
 mod traits;
 
 use std::fs;
@@ -16,6 +17,7 @@ use crate::{
     args::{Args, Command},
     export::graphviz::Graphviz,
     grammar::{lexer::Lexer, parser::Parser},
+    repl::repl::Repl,
 };
 
 fn main() {
@@ -35,6 +37,9 @@ fn main() {
 
     match args.command {
         Command::Export { output, engine, .. } => Graphviz::export(&model, output, &engine),
-        Command::Interactive { input } => todo!(),
+        Command::Interactive { input } => {
+            let mut repl = Repl::new(&model);
+            repl.run()
+        }
     }
 }
