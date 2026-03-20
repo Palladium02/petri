@@ -10,6 +10,7 @@ use crate::grammar::{
     traits::{Extract, RangeExt},
 };
 
+#[derive(Debug)]
 pub enum ParseError {
     UnexpectedEoF,
     UnexpectedToken(SpannedToken),

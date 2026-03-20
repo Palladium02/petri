@@ -2,7 +2,7 @@ use std::{iter::Peekable, range::Range, str::Chars};
 
 pub type SpannedToken = (Token, Range<usize>);
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Token {
     // Keywords
     Place,

@@ -1,6 +1,9 @@
 use std::range::Range;
 
-use crate::grammar::lexer::Token;
+use crate::grammar::{
+    ast::{Program, Statement},
+    lexer::Token,
+};
 
 pub trait Extract {
     type Output;
