@@ -37,10 +37,11 @@ impl<'k> PetriNet<'k> {
     }
 
     pub fn is_enabled(&self, transition_idx: usize) -> bool {
-        let t = &self.transitions[transition_idx];
-        t.inputs
+        let transition = &self.transitions[transition_idx];
+        transition
+            .inputs
             .iter()
-            .all(|(p, count)| self.places[*p].tokens >= *count)
+            .all(|(place_idx, count)| self.places[*place_idx].tokens >= *count)
     }
 
     pub fn fire(&mut self, transition_idx: usize) {
@@ -52,19 +53,17 @@ impl<'k> PetriNet<'k> {
             return;
         }
 
-        let t = &self.transitions[transition_idx];
+        let transition = &self.transitions[transition_idx];
 
-        // Consume input tokens
-        for (p, count) in &t.inputs {
-            self.places[*p].tokens -= *count;
+        for (place_idx, count) in &transition.inputs {
+            self.places[*place_idx].tokens -= *count;
         }
 
-        // Produce output tokens
-        for (p, count) in &t.outputs {
+        for (p, count) in &transition.outputs {
             self.places[*p].tokens += *count;
         }
 
-        println!("Fired transition {}", t.name);
+        println!("Fired transition {}", transition.name);
     }
 
     pub fn enabled_transitions(&self) -> Vec<&Transition> {
