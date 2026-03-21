@@ -26,7 +26,10 @@ impl Graphviz {
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .spawn()
-            .expect("Failed to start do");
+            .expect(&format!(
+                "Failed to run {}, make sure you have Graphviz installed",
+                engine.to_string()
+            ));
 
         child
             .stdin

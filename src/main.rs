@@ -20,19 +20,26 @@ use crate::{
     repl::repl::Repl,
 };
 
-fn main() {
+#[derive(Debug)]
+enum PetriError {
+    NoSuchFile,
+    Parsing,
+    Semantics,
+}
+
+fn main() -> Result<(), PetriError> {
     let args = Args::parse();
 
-    let input = fs::read_to_string(args.command.input()).expect("Failed to read input");
+    let input = fs::read_to_string(args.command.input()).map_err(|_| PetriError::NoSuchFile)?;
     let ast = Parser::new(Lexer::new(&input))
         .parse()
-        .expect("Failed to parse");
+        .map_err(|_| PetriError::Parsing)?;
     let (model, report) = Analyzer::analyze(&ast);
 
     println!("{}", report.to_string(&input));
 
     if report.has_error() {
-        return;
+        return Err(PetriError::Semantics);
     }
 
     match args.command {
@@ -42,4 +49,6 @@ fn main() {
             repl.run()
         }
     }
+
+    Ok(())
 }
