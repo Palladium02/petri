@@ -44,7 +44,10 @@ impl Analyzer {
                             .to_owned(),
                     );
                 })
-                .unwrap_or(&Symbol::Error);
+                .unwrap_or_else(|| {
+                    report.error(*arc.span(), Reason::UndefinedSymbol(arc.left().to_owned()));
+                    &Symbol::Error
+                });
 
             let right = model
                 .symbols()
@@ -57,7 +60,10 @@ impl Analyzer {
                             .to_owned(),
                     );
                 })
-                .unwrap_or(&Symbol::Error);
+                .unwrap_or_else(|| {
+                    report.error(*arc.span(), Reason::UndefinedSymbol(arc.right().to_owned()));
+                    &Symbol::Error
+                });
 
             match (left, right) {
                 (Symbol::Place { .. }, Symbol::Place { .. })
@@ -71,7 +77,7 @@ impl Analyzer {
                 report.error(*arc.span(), Reason::ZeroAsWeight);
             }
 
-            if !(left.is_error() && right.is_error()) {
+            if !left.is_error() && !right.is_error() {
                 let key = (left.name().unwrap(), right.name().unwrap());
                 if let Some(span) = used_pairs.get(&key) {
                     report.error_with_related(*arc.span(), vec![*span], Reason::RedeclarationOfArc);

@@ -32,7 +32,7 @@ impl fmt::Display for Severity {
 #[derive(Debug)]
 pub enum Reason {
     UnusedSymbol,
-    UndefinedSymbol,
+    UndefinedSymbol(String),
     RedeclarationOfSymbol,
     BipartideViolation,
     RedeclarationOfArc,
@@ -51,16 +51,19 @@ impl Diagnostic {
     pub fn to_string(&self, source: &str) -> String {
         let severity = self.severity.to_string();
 
-        match self.reason {
+        match &self.reason {
             Reason::UnusedSymbol => {
                 let outline = source.outline(self.primary);
                 format!(
                     "{severity} Found unused but declared symbol: \n{outline}\nConsider removing the declaration, if this is intentional you can ignore this warning."
                 )
             }
-            Reason::UndefinedSymbol => {
+            Reason::UndefinedSymbol(name) => {
                 let outline = source.outline(self.primary);
-                format!("{severity} Use of undeclared symbol: \n{outline}")
+                format!(
+                    "{severity} Use of undeclared symbol {}: \n{}",
+                    &name, outline
+                )
             }
             Reason::RedeclarationOfSymbol => {
                 let primary_outline = source.outline(self.primary);
